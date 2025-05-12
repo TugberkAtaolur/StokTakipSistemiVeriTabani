@@ -40,7 +40,7 @@ namespace StokTakipVeriTabaniProjesi
         private void button2_Click(object sender, EventArgs e)
         {
             bagla.Open();
-            SqlCommand komut = new SqlCommand("insert into stoktakiptablosu(kodu,adı,alısfiyati,satısfiyati,birim,miktar,tarih)values(@kodu,@adı,@alısfiyati,@satısfiyati,@birim,@miktar,@tarih)",bagla);
+            SqlCommand komut = new SqlCommand("insert into stoktakiptablosu(kodu,adı,alısfiyati,satısfiyati,birim,miktar,tarih)values(@kodu,@adı,@alısfiyati,@satısfiyati,@birim,@miktar,@tarih)", bagla);
             komut.Parameters.AddWithValue("@kodu", textBox1.Text);
             komut.Parameters.AddWithValue("@adı", textBox2.Text);
             komut.Parameters.AddWithValue("@alısfiyati", textBox3.Text);
@@ -51,6 +51,15 @@ namespace StokTakipVeriTabaniProjesi
             komut.ExecuteNonQuery();
             verilerigoster("select * from stoktakiptablosu");
             bagla.Close();
+
+
+            textBox1.Clear();
+            textBox2.Clear();
+            textBox3.Clear();
+            textBox4.Clear();
+            textBox5.Clear();
+            textBox6.Clear();
+            
         }
 
     }
