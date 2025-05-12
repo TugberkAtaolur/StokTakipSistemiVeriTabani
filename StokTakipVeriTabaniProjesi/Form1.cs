@@ -58,8 +58,8 @@ namespace StokTakipVeriTabaniProjesi
             textBox3.Clear();
             textBox4.Clear();
             textBox5.Clear();
-            textBox6.Clear();
-            textBox7.Clear();
+           
+            
 
         }
 
