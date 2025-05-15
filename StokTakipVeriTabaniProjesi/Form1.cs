@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using StokTakipVeriTabaniProjesi.StokModel1;
+
 
 namespace StokTakipVeriTabaniProjesi
 {
@@ -19,18 +21,21 @@ namespace StokTakipVeriTabaniProjesi
         }
         SqlConnection bagla = new SqlConnection("Data Source=DESKTOP-V2B2B5B\\TUGBERK;Initial Catalog=StokTakipSistemi;Integrated Security=True;TrustServerCertificate=True");
 
-        public void verilerigoster(string veriler)
+        private void VerileriGoster()
         {
-            SqlDataAdapter da = new SqlDataAdapter(veriler,bagla);
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            dataGridView1.DataSource = ds.Tables[0];
+            using (var db = new StokTakipSistemiEntities())
+            {
+                var liste = db.stoktakiptablosu.ToList();
+                dataGridView1.DataSource = liste;
+            }
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-            verilerigoster("select * from stoktakiptablosu");
+            VerileriGoster();
         }
+
 
         private void label4_Click(object sender, EventArgs e)
         {
@@ -39,28 +44,36 @@ namespace StokTakipVeriTabaniProjesi
 
         private void button2_Click(object sender, EventArgs e)
         {
-            bagla.Open();
-            SqlCommand komut = new SqlCommand("insert into stoktakiptablosu(kodu,adı,alısfiyati,satısfiyati,birim,miktar,tarih)values(@kodu,@adı,@alısfiyati,@satısfiyati,@birim,@miktar,@tarih)", bagla);
-            komut.Parameters.AddWithValue("@kodu", textBox1.Text);
-            komut.Parameters.AddWithValue("@adı", textBox2.Text);
-            komut.Parameters.AddWithValue("@alısfiyati", textBox3.Text);
-            komut.Parameters.AddWithValue("@satısfiyati", textBox4.Text);
-            komut.Parameters.AddWithValue("@birim", textBox5.Text);
-            komut.Parameters.AddWithValue("@miktar", textBox6.Text);
-            komut.Parameters.AddWithValue("@tarih", textBox7.Text);
-            komut.ExecuteNonQuery();
-            verilerigoster("select * from stoktakiptablosu");
-            bagla.Close();
+            using (var db = new StokTakipSistemiEntities())
+            {
+                stoktakiptablosu yeni = new stoktakiptablosu();
+                yeni.kodu = textBox1.Text;
+                yeni.adı = textBox2.Text;
+                yeni.alısfiyati = Convert.ToDecimal(textBox3.Text);
+                yeni.satısfiyati = Convert.ToDecimal(textBox4.Text);
+                yeni.birim = textBox5.Text;
+                yeni.miktar = Convert.ToInt32(textBox6.Text);
+                yeni.tarih = Convert.ToDateTime(textBox7.Text);
 
+                db.stoktakiptablosu.Add(yeni);
+                db.SaveChanges();
+            }
+
+            VerileriGoster();
 
             textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
             textBox4.Clear();
             textBox5.Clear();
-           
-            
+            textBox6.Clear();
+            textBox7.Clear();
+        }
 
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            VerileriGoster();
         }
 
     }
